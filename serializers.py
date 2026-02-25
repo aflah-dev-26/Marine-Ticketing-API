@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from .models import User
+from .models import Booking,Payment
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
+class BookingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username','password','email','role']
+        model = Booking
+        fields = ['id','route','travel_date']
 
-        def create(self, validated_data):
-            user = User.objects.create_user(
-                username = validated_data['username'],
-                password = validated_data['password'],
-                email = validated_data('email'),
-                role = validated_data['role']
-            )
-            return user
+class OtpVerifySerializer(serializers.Serializer):
+    class Meta:
+        booking_id = serializers.IntegerField()
+        otp = serializers.CharField(max_length=6)
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ['id','booking','payment_method','amount']
+        read_only_fields = ['booking']    
